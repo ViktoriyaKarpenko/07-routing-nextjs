@@ -16,7 +16,7 @@ import Pagination from '@/components/Pagination/Pagination';
 import css from '../../../notes/NotesPage.module.css';
 
 export default function FilteredNotesPage() {
-  const { tag } = useParams<{ tag: string[] }>();
+  const { slug } = useParams<{ slug: string[] }>();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -25,7 +25,7 @@ export default function FilteredNotesPage() {
   const [inputValue, setInputValue] = useState(search);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const currentTag = tag?.[0] ?? 'all';
+  const currentTag = slug?.[0] ?? 'all';
   const activeTag = currentTag === 'all' ? undefined : currentTag;
 
   const setPage = (newPage: number) => {
