@@ -1,4 +1,3 @@
-import { notFound } from 'next/navigation';
 import {
   HydrationBoundary,
   QueryClient,
@@ -17,14 +16,10 @@ export default async function NoteDetailsPage({
   const { id } = await params;
   const queryClient = new QueryClient();
 
-  try {
-    await queryClient.prefetchQuery({
-      queryKey: ['note', id],
-      queryFn: () => fetchNoteById(id),
-    });
-  } catch {
-    notFound();
-  }
+  await queryClient.prefetchQuery({
+    queryKey: ['note', id],
+    queryFn: () => fetchNoteById(id),
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

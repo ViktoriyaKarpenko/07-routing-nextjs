@@ -1,21 +1,23 @@
 'use client';
 
-import { useParams, useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter, useParams } from 'next/navigation';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { useDebouncedCallback } from 'use-debounce';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { fetchNotes } from '@/lib/api';
 import NoteList from '@/components/NoteList/NoteList';
 import Loader from '@/components/Loader/Loader';
-import ErrorMessage from '@/components/ErrorMessage/ErrorMessage';
-import EmptyState from '@/components/EmptyState/EmptyState';
+import Pagination from '@/components/Pagination/Pagination';
 import SearchBox from '@/components/SearchBox/SearchBox';
 import Modal from '@/components/Modal/Modal';
 import NoteForm from '@/components/NoteForm/NoteForm';
-import Pagination from '@/components/Pagination/Pagination';
-import css from '../../../notes/NotesPage.module.css';
+import css from './NotesPage.module.css';
 
-export default function FilteredNotesPage() {
+interface NotesClientProps {
+  tag?: string;
+}
+
+export default function NotesClient({ tag }: NotesClientProps) {
   const { slug } = useParams<{ slug: string[] }>();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -25,8 +27,11 @@ export default function FilteredNotesPage() {
   const [inputValue, setInputValue] = useState(search);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  useEffect(() => {
+    setInputValue(search);
+  }, [search]);
+
   const currentTag = slug?.[0] ?? 'all';
-  const activeTag = currentTag === 'all' ? undefined : currentTag;
 
   const setPage = (newPage: number) => {
     router.replace(
@@ -44,14 +49,8 @@ export default function FilteredNotesPage() {
   };
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['notes', page, search, activeTag],
-    queryFn: () =>
-      fetchNotes({
-        page,
-        perPage: 12,
-        search,
-        tag: activeTag,
-      }),
+    queryKey: ['notes', page, search, tag],
+    queryFn: () => fetchNotes({ page, perPage: 12, search, tag }),
     placeholderData: keepPreviousData,
     staleTime: 1000 * 30,
     refetchOnMount: false,
@@ -75,10 +74,12 @@ export default function FilteredNotesPage() {
           Create note +
         </button>
       </header>
+
       {isLoading && <Loader />}
-      {isError && <ErrorMessage />}
+      {isError && <p>Something went wrong.</p>}
       {!isLoading && !isError && notes.length > 0 && <NoteList notes={notes} />}
-      {!isLoading && !isError && notes.length === 0 && <EmptyState />}
+      {!isLoading && !isError && notes.length === 0 && <p>No notes found.</p>}
+
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
           <NoteForm onClose={() => setIsModalOpen(false)} />

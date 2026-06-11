@@ -6,8 +6,8 @@ import { fetchNoteById } from '@/lib/api';
 import css from './NoteDetails.module.css';
 
 export default function NoteDetailsClient() {
-  const router = useRouter();
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   const from = searchParams.get('from');
@@ -40,7 +40,7 @@ export default function NoteDetailsClient() {
         <div className={css.item}>
           <div className={css.header}>
             <h2>{note.title}</h2>
-            <button className={css.backButton} onClick={handleBack}>
+            <button className={css.backBtn} onClick={handleBack}>
               ← Back
             </button>
           </div>

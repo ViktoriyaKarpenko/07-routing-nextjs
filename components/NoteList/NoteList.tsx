@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteNote } from '@/lib/api';
 import type { Note } from '@/types/note';
@@ -13,9 +12,6 @@ interface NoteListProps {
 
 export default function NoteList({ notes }: NoteListProps) {
   const queryClient = useQueryClient();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const page = searchParams.get('page') ?? '1';
 
   const deleteMutation = useMutation({
     mutationFn: deleteNote,
@@ -23,10 +19,6 @@ export default function NoteList({ notes }: NoteListProps) {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
     },
   });
-
-  const getNoteHref = (id: string) => {
-    return `/notes/${id}?from=${pathname}&page=${page}`;
-  };
 
   return (
     <ul className={css.list}>
@@ -36,7 +28,7 @@ export default function NoteList({ notes }: NoteListProps) {
           <p className={css.content}>{note.content}</p>
           <div className={css.footer}>
             <span className={css.tag}>{note.tag}</span>
-            <Link href={getNoteHref(note.id)} className={css.link}>
+            <Link href={`/notes/${note.id}`} className={css.link}>
               View details
             </Link>
             <button

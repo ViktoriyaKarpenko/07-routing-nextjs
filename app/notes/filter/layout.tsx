@@ -7,9 +7,9 @@ interface FilterLayoutProps {
 
 export default function FilterLayout({ children, sidebar }: FilterLayoutProps) {
   return (
-    <div className={css.container}>
-      <div className={css.sidebar}>{sidebar}</div>
+    <section className={css.container}>
+      <aside className={css.sidebar}>{sidebar}</aside>
       <div className={css.notesWrapper}>{children}</div>
-    </div>
+    </section>
   );
 }

@@ -21,3 +21,14 @@
   background-color: #444;
   color: #ddd;
 }
+
+.active {
+  background-color: #0d6efd;
+  color: #fff;
+  border-radius: 4px;
+}
+
+.active:hover {
+  background-color: #0b5ed7;
+  color: #fff;
+}
